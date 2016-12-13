@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>title</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="./lib/bootstrap/dist/css/bootstrap.css" />
+    
+</head>
+<body>
+    <header class="header">
+        <h1 class="logo">
+            <a href="index.html" title="cnNodeJs.Org Home By FungLeo">cnNodeJs.Org Home By FungLeo</a>
+        </h1>
+        <nav class="nav">
+            <ul>
+                <li>导航列表</li>                
+            </ul>
+        </nav>
+    </header>
+    <section class="home">
+        <section class="main">
+        	
+        <div id="test">
+	            <ul class="list">
+	                 <li v-for="item in arrayData.data">
+	                    <i class="user_ico">
+	                    	<img v-bind:src="item.author.avatar_url"  v-bind:alt="item.author.loginname" />
+	                    	<span>{{item.author.loginname}}</span>
+	                    </i>
+	                    <span>发表5 天前</span>
+	                    <a class="talk" href="content.html?链接ID">{{item.title}}</a>
+	                   
+	                </li>                
+	            </ul>
+               	 <div class="page">               	 	
+               	 </div>
+         </div>
+          
+          
+        </section>
+        <aside class="bar">
+            <h3>本页说明</h3>
+            ...
+        </aside>
+    </section>
+    <footer class="copy">
+       版权说明
+    </footer>
+    <div class="go_top"></div>
+</body>
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/vue.js"></script>
+<script type="text/javascript" src="js/laypage.js" ></script>
+<script>
+	$(function(){
+		var vue,indexPage={
+			url:"http://cnodejs.org/api/v1/topics?page=1",
+			getJson:function(url,func){
+				$.ajax({
+			        type:'get', 
+			        url:url,
+			        dataType: 'json',
+			        success: function(data){
+			            if (data.success){
+			                func(data);
+			            }else{
+			                alert("接口调用失败");
+			            }
+			        },
+			        error: function(data){
+			            //alert(JSON.stringify(data));
+			        }
+			    });
+			},
+			pushDom:function(mydata){
+			    vue= new Vue({
+		            el: "#test",
+		            data: {
+		                //总项目数
+		                totalCount: 200,
+		                //分页数
+		                pageCount: 20,
+		                //当前页面
+		                pageCurrent: 1,
+		                //翻页小方块span个数
+		                pageSpanCount:5,
+		                //分页大小
+		                pagesize: 10,
+		                //显示分页按钮数
+		                showPages: 11,
+		                //开始显示的分页按钮
+		                showPagesStart: 1,
+		                //结束显示的分页按钮
+		                showPageEnd: 100,
+		                //分页数据
+		                arrayData:mydata
+		            },
+		            methods: {
+		                //分页方法
+		                showPage: function (pageIndex, $event, forceRefresh,mm) {
+		                    this.pageCurrent=pageIndex;
+		                    this.arrayData=mm;
+		                }
+		               
+		            }
+		     
+				 });
+                
+                var curr;
+				   laypage({
+			        cont: $(".page"),
+			        pages: 100,
+			        curr: curr||1,
+			        skip: true, //是否开启跳页
+			        groups: 3, //连续显示分页数
+			        jump: function(e, first){
+			            if(!first){
+			            	 var url1 = "http://cnodejs.org/api/v1/topics?page="+e.curr;
+			            	 vue.pageCurrent=e.curr;
+			            	 indexPage.changePageNum(url1,vue);
+			            }
+			        }
+			    });  
+      	
+			}
+		   };
+		
+		indexPage.changePageNum=function(url1,vue){
+        	$.ajax({
+		        type:'get', 
+		        url:url1,
+		        dataType: 'json',
+		        success: function(data){
+		            if (data.success){
+		                vue.arrayData=data;
+		            }else{
+		                alert("接口调用失败");
+		            }
+		        },
+		        error: function(data){
+		            alert(JSON.stringify(data));
+		        }
+		    });
+         }
+		indexPage.getJson(indexPage.url,indexPage.pushDom);
+	});
+</script>
+</html>

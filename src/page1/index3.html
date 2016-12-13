@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>title</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="./lib/bootstrap/dist/css/bootstrap.css" />
+    
+</head>
+<body>
+    <header class="header">
+        <h1 class="logo">
+            <a href="index.html" title="cnNodeJs.Org Home By FungLeo">cnNodeJs.Org Home By FungLeo</a>
+        </h1>
+        <nav class="nav">
+            <ul>
+                <li>导航列表</li>                
+            </ul>
+        </nav>
+    </header>
+    <section class="home">
+        <section class="main">
+        	
+        <div id="test">
+	            <ul class="list">
+	                 <li v-for="item in arrayData.data">
+	                    <i class="user_ico">
+	                    	<img v-bind:src="item.author.avatar_url"  v-bind:alt="item.author.loginname" />
+	                    	<span>{{item.author.loginname}}</span>
+	                    </i>
+	                    <span>发表5 天前</span>
+	                    <a class="talk" href="content.html?链接ID">{{item.title}}</a>
+	                   
+	                </li>                
+	            </ul>
+               	 <div class="page">               	 	
+               	 </div>
+         </div>
+          
+          
+        </section>
+        <aside class="bar">
+            <h3>本页说明</h3>
+            ...
+        </aside>
+    </section>
+    <footer class="copy">
+       版权说明
+    </footer>
+    <div class="go_top"></div>
+</body>
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/vue.js"></script>
+<script type="text/javascript" src="js/laypage.js" ></script>
+<script>
+
+
+/*作者:hy
+ * 功能：【用 vuejs展示数据】+【插件分页】+【ajax调用API数据】
+ * 所用插件：laypage(分页)
+ * 方法: 
+ */
+
+$(function(){
+	
+	/*【 创建indexPage页面里需要用到的变量和方法】
+	 * apiUrl：api地址
+	 * instanceVueObj：方法里实例化一个vue对象，用于绑定列表数据
+	 */
+	var vue,indexPGE={
+		apiUrl:"http://cnodejs.org/api/v1/topics?page=1", 
+		instanceVueObj:function(ajaxData){
+				   vue= new Vue({
+						            el: "#test",
+						            data: {		
+						                arrayData:ajaxData //绑定数据
+						            }						     
+					});
+					indexPGE.pageView(vue);
+		},
+		getJson:function(url,func,vue){			
+			   if(func!=null)
+			   {
+					$.ajax({
+					        type:'get', 
+					        url:url,
+					        dataType: 'json',
+					        success: function(data){
+					            if (data.success){
+					            	console.log(JSON.stringify(data).length); 
+					                func(data);
+					            }else{
+					                alert("接口调用失败");
+					            }
+					        },
+					        error: function(data){
+					        }
+				    });
+			   }
+			   else{
+			   	  $.ajax({ 
+					        type:'get', 
+					        url:url,
+					        dataType: 'json',
+					        success: function(data){
+					            if (data.success){
+					            	console.log(JSON.stringify(data).length); 
+					                vue.arrayData=data;
+					            }else{
+					                alert("接口调用失败");
+					            }
+					        },
+					        error: function(data){
+					        }
+				    });
+			   }
+		},
+		pageView:function(vue){
+			 var curr;
+				   laypage({
+			        cont: $(".page"),
+			        pages: 100,
+			        curr: curr||1,
+			        skip: true, //是否开启跳页
+			        groups: 3, //连续显示分页数
+			        jump: function(ee, first){
+			            if(!first){
+			            	 var url1 = "http://cnodejs.org/api/v1/topics?page="+ee.curr;
+			            	 indexPGE.getJson(url1,null,vue);
+			            }
+			        }
+			    });  
+		}
+	};
+	
+	
+	/*【业务调用】【查询后端数据，绑定到vue实例对象上】
+	 * 1. getJson(apiUrl,instanceVueObj);
+	 */
+	indexPGE.getJson(indexPGE.apiUrl,indexPGE.instanceVueObj);
+	
+});
+	
+</script>
+</html>
