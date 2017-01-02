@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	</head>
+   <style>
+   	.gray{
+   		background-color: gray;
+   	}
+   </style>
+	<body>
+		<div id="box">
+			<input type="text" v-model="inputStr" v-on:keyup="getData($event)" v-on:keydown.up.prevent="up($event);" 
+				v-on:keydown.40="down($event);"/>
+			<ul>
+				<li v-for="(value,index) in myData" :class="{gray:index==nowIndex}">
+					{{value}}
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="css/bootstrap.min.css" />
+	<script type="text/javascript" src="js/vue.js"></script>
+	<!--<script src="js/vue-resource.min.js"></script>-->
+
+	<!--<script type="text/javascript" src="newvueResource/vue.js" ></script>-->
+	<script type="text/javascript" src="newvueResource/vue-resource.js"></script>
+
+	<script type="text/javascript">
+		new Vue({
+			el: "#box",
+			data: {
+				myData: [],
+				inputStr: '',
+				nowIndex:-1,
+				gray:'gray'
+			},
+			methods: {
+				up:function(ex){
+					this.nowIndex--;
+					if(this.nowIndex==-2){this.nowIndex=this.myData.length-1;}
+					  this.inputStr=this.myData[this.nowIndex];
+					
+				},
+				down:function(ex){
+					this.nowIndex++;
+					if(this.nowIndex==this.myData.length){this.nowIndex=-1;}
+					this.inputStr=this.myData[this.nowIndex];
+					
+				},
+				getData: function(ev) {					
+					var that=this;
+					if(ev.keyCode==40 || ev.keyCode==38)return;
+					if(ev.keyCode==13){
+						window.open("https://www.baidu.com/s?wd="+this.inputStr);
+						this.inputStr='';
+					}
+
+					// var func_url="https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=%27a%27&callback=jQuery111105183115527033806_1483161029683&_=1483161029684%20(1)";
+					var func_url = "http://192.168.51.111:8081/tan.maven.springmvc Maven Webapp/users.do?method=getBaiduWord";
+					$.ajax({
+						url: func_url,
+						type: 'post',
+						dataType:"json", 
+						//async: false,
+						data: {
+							wd:that.inputStr
+						},
+						success: function(data) { // 接后台返回result 
+							console.log(this);
+							that.myData=data.s;
+						},
+						error: function() {
+							//alert("errr");
+						}
+					});
+
+					
+
+					/*this.$http.jsonp('https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su',{
+                            wd:this.inputStr
+                        },{
+                            jsonp:'cb'
+                        }).then(function(res){
+                            this.myData=res.data.s;
+                        },function(){
+                            
+                        });*/
+                       
+
+				}
+			}
+		});
+	</script>
+
+</html>

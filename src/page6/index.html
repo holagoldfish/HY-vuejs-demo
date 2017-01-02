@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		
+	</head>
+	<body id="mybody">
+		<div class="box">{{msg}}
+		  <input v-model="msg2"/>
+		  <div v-model="msg2">{{msg2}}</div>
+		  <div>{{msg3}}</div>
+		  {{arr}}
+		  <br>
+		  {{json}}
+		  <ul>
+		  	<li v-for="(value,index) in arr">{{value}} {{index}}</li>
+		  </ul>
+		  <br>
+		  	<ul >
+		  	<li v-for="(value,key,index) in json">{{value}}</li>
+		  </ul>
+		  
+		 <input value="button" type="button" v-on:mouseover="add()" />
+		 <br>
+		  <br> <br>
+		 <input value="button" type="button" v-on:click="show()" />		 
+		 <div style="width: 100px; height: 100px; background: red;" v-show="isShow">
+		 	
+		 </div>
+		 
+		</div>
+	</body>
+	<script src="js/vue.js"></script>
+	<script>
+		var v=new Vue({
+			el:".box",
+			data:{
+				msg:'vcccccc',
+				msg2:12,
+				msg3:true,
+				arr:['aa','bb','cc'], 
+				json:{a:'fsafds',b:'ooooo'},
+				isShow:true
+			},
+			methods:{
+				add:function(){
+					this.arr.push('dd');
+					var m={
+						c:'bbb'
+					}
+					this.json.c="cccc";
+					this.json['d']="ddd";
+				},
+				show:function(){
+					alert(1);
+					this.isShow=!(this.isShow);					
+				}
+			}
+		});   
+	</script> 
+</html>

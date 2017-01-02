@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+		<div id="box">
+			<div @click="show2();">
+				<input type="button" value="111" v-on:click="show($event)" />
+				<input type="button" value="2222" v-on:click.stop="show($event)" />
+			</div>
+
+			<div>
+				<input type="button" value="3333" @contextmenu="show3($event)" />
+			</div>
+
+			<div>
+				<input type="button" value="4444" @contextmenu.prevent="show4($event)" />
+			</div>
+
+			<div>
+				<input type="text" v-on:keyup="show5($event)" />
+			</div>
+
+			<div>
+				<input type="text" @keyup.13="alert(13);" />
+			</div>
+
+			<div>
+				<input type="text" @keyup.up="alert(11);" />
+			</div>
+
+			<div>
+
+				<img width="100px" src="https://10.url.cn/qqcourse_logo_ng/ajNVdqHZLLASL19RjMg4Kicic4AKfjB0Gk3s7NX3BlnrCWHU0Q1fTRibiboH0KhicAOwMEIMJOvKoia48/220?tp=webp" />
+				<img src="{{msg}}" alt="" />
+				<img v-bind:src="msg" :width="w" :height="h" />
+			</div>
+
+			<div>
+				<strong :class="[red,font]">文字</strong>
+			</div>
+
+			<br>
+			<div>
+				<strong :class="{red:a,font:b}">文字</strong>
+			</div>
+			<div>
+				<strong :style="c">文字</strong>
+			</div>
+
+			<div>
+				<strong :style="d">测试style</strong>
+			</div>
+			<hr>
+			<button v-on:click="getfun()">调用后台</button>
+
+		</div>
+	</body>
+	<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="css/bootstrap.min.css" />
+	<script type="text/javascript" src="js/vue.js"></script>
+	<script src="js/vue-resource.min.js"></script>
+	<script>
+		new Vue({
+			el: "#box",
+			data: {
+				msg: 'https://10.url.cn/qqcourse_logo_ng/ajNVdqHZLLASL19RjMg4Kicic4AKfjB0Gk3s7NX3BlnrCWHU0Q1fTRibiboH0KhicAOwMEIMJOvKoia48/220?tp=webp',
+				w: '100px',
+				h: '200px',
+				a: true,
+				b: true,
+				red: 'red',
+				font: 'font',
+				c: 'color:red;font-size:30px;background-color:blue;padding:10px',
+				d: {
+					color: 'yellow',
+					fontSize: '50px'
+				},
+				hellomsg: 'hellowo'
+
+			},
+			methods: {
+				show: function(ex) {
+					alert(ex.clientX);
+					//ex.cancelBubble=true;
+				},
+				show2: function() {
+					alert('fffffffff');
+				},
+				show3: function(ex) {
+					alert('3333333');
+					ex.preventDefault();
+				},
+				show4: function(ex) {
+					alert('4444444');
+				},
+				show5: function(ex) {
+					if(ex.keyCode == 13) {
+						alert(ex.keyCode);
+					}
+				},
+				getfun: function() {
+					  //方法一：
+					/*this.$http.post('http://localhost:3000/',{
+						start:5,
+						end:7
+					},{
+						emulateJSON:true
+					}).then(function(res){
+						alert("ok"+res.data);						
+					},function(res){
+						alert("error"+res.data);
+					});*/
+					
+                
+					/*//方法二：
+					 * var func_url = "http://localhost:3000/";
+					$.ajax({
+						//url: "http://127.0.0.1:8081/tan.maven.springmvc Maven Webapp/users.do?method=vuejsDemo", 
+						//contentType: "application/x-www-form-urlencoded; charset=utf-8", 
+						url: func_url,
+						type: 'post',
+						//dataType:"json", 
+						async: false,
+						data: {
+							start: 0,
+							end: 1
+						},
+						success: function(data) { // 接后台返回result 
+							alert("aaaaaa" + data);
+						},
+						error: function() {
+							alert("errr");
+						}
+					});*/
+					
+					
+
+				}
+			}
+		});
+	</script>
+	<style>
+		.red {
+			color: red;
+		}
+		
+		.font {
+			font-size: 20px;
+		}
+	</style>
+
+</html>
